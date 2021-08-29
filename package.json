@@ -24,6 +24,9 @@
     "systemctl": "0.2.2"
   },
   "devDependencies": {
-    "memfs": "^3.2.2"
+    "chai": "4.3.4",
+    "memfs": "^3.2.2",
+    "mocha": "9.1.1",
+    "sinon": "11.1.2"
   }
 }
