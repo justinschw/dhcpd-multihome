@@ -1,6 +1,6 @@
 {
   "name": "dhcpd-multi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A library to configure a multihome dhcpd server",
   "main": "index.js",
   "scripts": {
