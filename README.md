@@ -29,6 +29,12 @@ const dhcp = new DHCP({
     }
   ]
 });
+
+dhcp.deploy().then(() => {
+  console.log('DHCP loaded');
+}).catch(err => {
+  console.error('Failed to load DHCP');
+});
 ```
 
 ## Additional options
