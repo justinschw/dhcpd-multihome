@@ -1,0 +1,29 @@
+{
+  "name": "dhcpd-multi",
+  "version": "1.0.0",
+  "description": "A library to configure a multihome dhcpd server",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justinschw/dhcpd-multihome"
+  },
+  "keywords": [
+    "dhcp",
+    "linux",
+    "networking"
+  ],
+  "author": "Justin Schwartzbeck (justinmschw@gmail.com)",
+  "license": "BSD",
+  "homepage": "https://github.com/justinschw/dnsmasq-dhcp#readme",
+  "dependencies": {
+    "joi": "^17.4.2",
+    "netmask": "^2.0.2",
+    "systemctl": "0.2.2"
+  },
+  "devDependencies": {
+    "memfs": "^3.2.2"
+  }
+}
