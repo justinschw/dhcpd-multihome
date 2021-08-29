@@ -1,4 +1,4 @@
-# dhcpd-multihome
+# dhcpd-multi
 A library to configure a multihome dhcpd server
 
 This basically does what the dhcpd library does, except it allows you to configure for more than one interface. I didn't fork the other one or create a PR simply because I don't want to have to learn typescript.
@@ -6,7 +6,7 @@ This basically does what the dhcpd library does, except it allows you to configu
 ## Usage
 ```
 // Create an ISC dhcp server for two interfaces
-const DHCP = require('dhcp-multihome');
+const DHCP = require('dhcp-multi');
 
 const dhcp = new DHCP({
   defaultLeaseTime: 1200,           // Defaults to 600
