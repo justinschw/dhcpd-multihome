@@ -50,14 +50,19 @@ describe('/lib/dhcpMulti', function() {
     });
 
     describe('deploy', function() {
+        let restarts = 0;
         beforeEach(function() {
             // Create mock config file structure
+            restarts = 0;
             const defaultsContents = fs.readFileSync(`${__dirname}/data/defaults`, 'utf-8');
             memfs.mkdirSync('/etc/default/', {recursive: true});
             memfs.mkdirSync('/etc/dhcp/', {recursive: true});
             memfs.writeFileSync('/etc/default/isc-dhcp-server', defaultsContents, 'utf-8');
             memfs.writeFileSync('/etc/dhcp/dhcpd.conf', '', 'utf-8');
-            sandbox.stub(systemctl, 'restart').resolves();
+            sandbox.stub(systemctl, 'restart').callsFake(function() {
+                restarts += 1;
+                return Promise.resolve();
+            });
         });
 
         afterEach(function() {
@@ -83,7 +88,37 @@ describe('/lib/dhcpMulti', function() {
                 expect(configContents.indexOf('interface eth1')).gte(0);
                 expect(configContents.indexOf('routers 192.168.5.1')).gte(0);
                 expect(configContents.indexOf('range 192.168.5.2 192.168.5.254')).gte(0);
+                expect(restarts).eql(1);
                 done();
+            });
+        });
+
+        it('twice', function(done) {
+            const dhcp = new DHCP({
+                networks: [
+                    {
+                        iface: 'eth1',
+                        subnet: '192.168.5.0',
+                        domainName: 'example.com',
+                        nameservers: ['1.1.1.1', '1.1.1.2']
+                    }
+                ]
+            });
+
+            dhcp.deploy().then(() => {
+                const defaultFileContents = memfs.readFileSync(dhcp.defaultsFilePath, 'utf-8');
+                const configContents = memfs.readFileSync(dhcp.configFilePath, 'utf-8');
+                expect(defaultFileContents.indexOf('INTERFACESv4="eth1"')).gte(0);
+                expect(configContents.indexOf('interface eth1')).gte(0);
+                expect(configContents.indexOf('routers 192.168.5.1')).gte(0);
+                expect(configContents.indexOf('range 192.168.5.2 192.168.5.254')).gte(0);
+
+                before = restarts;
+                // Deploy again; shouldn't deploy this time as nothing changed
+                dhcp.deploy().then(() => {
+                    expect(restarts).eql(before);
+                    done();
+                });
             });
         });
 
@@ -102,7 +137,8 @@ describe('/lib/dhcpMulti', function() {
             memfs.unlinkSync(dhcp.defaultsFilePath);
             dhcp.deploy().then(() => {
                 done(new Error('should have failed'));
-            }).catch(err => {
+            }).catch(() => {
+                expect(restarts).eql(0);
                 done();
             });
         });
@@ -123,6 +159,7 @@ describe('/lib/dhcpMulti', function() {
             dhcp.deploy().then(() => {
                 done(new Error('should have failed'));
             }).catch(err => {
+                expect(restarts).eql(0);
                 done();
             });
         });
