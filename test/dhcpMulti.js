@@ -105,7 +105,7 @@ describe('/lib/dhcpMulti', function() {
                 ]
             });
 
-            dhcp.deploy().then(() => {
+            dhcp.deploy(false).then(() => {
                 const defaultFileContents = memfs.readFileSync(dhcp.defaultsFilePath, 'utf-8');
                 const configContents = memfs.readFileSync(dhcp.configFilePath, 'utf-8');
                 expect(defaultFileContents.indexOf('INTERFACESv4="eth1"')).gte(0);
@@ -115,7 +115,7 @@ describe('/lib/dhcpMulti', function() {
 
                 before = restarts;
                 // Deploy again; shouldn't deploy this time as nothing changed
-                dhcp.deploy().then(() => {
+                dhcp.deploy(false).then(() => {
                     expect(restarts).eql(before);
                     done();
                 });
