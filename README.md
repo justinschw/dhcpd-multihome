@@ -6,7 +6,7 @@ This basically does what the dhcpd library does, except it allows you to configu
 ## Usage
 ```
 // Create an ISC dhcp server for two interfaces
-const DHCP = require('dhcp-multi');
+const DHCP = require('dhcpd-multi');
 
 const dhcp = new DHCP({
   defaultLeaseTime: 1200,           // Defaults to 600
